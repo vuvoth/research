@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 halo2_proofs = { git = "https://github.com/privacy-scaling-explorations/halo2.git" }
 halo2_gadgets = { git = "https://github.com/privacy-scaling-explorations/halo2.git" }
+halo2curves = { git = 'https://github.com/privacy-scaling-explorations/halo2curves', tag = '0.3.0' }
