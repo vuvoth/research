@@ -1,3 +1,5 @@
+use std::hash;
+
 use halo2curves::FieldExt;
 use poseidon::Spec;
 use transcript::{
@@ -17,6 +19,7 @@ pub struct MerkleTreeCircuitConfig {
 #[derive(Clone, Debug)]
 pub struct MerkleTreeCircuit<F: FieldExt> {
     pub merkle_proof: Vec<Value<F>>,
+    pub merkle_path: Vec<Value<F>>,
     pub leaf_node: Value<F>,
     pub hash_root: Value<F>,
 }
@@ -44,26 +47,27 @@ impl<F: FieldExt> Circuit<F> for MerkleTreeCircuit<F> {
         layouter.assign_region(
             || "",
             |region| {
-                let main_gate = MainGate::new(config.clone());
-
                 let mut ctx = RegionCtx::new(region, 0);
                 let spec = Spec::<F, 3, 2>::new(8, 57);
                 let mut hasher_chip = HasherChip::<F, 0, 0, 3, 2>::new(&mut ctx, &spec, &config)?;
+                let main_gate = hasher_chip.main_gate();
 
-                let mut hash_value = main_gate.assign_value(&mut ctx, self.leaf_node)?;
+                let mut hash_root = main_gate.assign_value(&mut ctx, self.leaf_node)?;
 
-                for another_hash in self.merkle_proof.clone() {
-                    let hash_cell = main_gate.assign_value(&mut ctx, another_hash)?;
-                    hasher_chip.update(&[hash_value.clone(), hash_cell]);
-                    hash_value = hasher_chip.hash(&mut ctx)?;
-                    println!("{:?}", hash_value.value());
+                for (index, hash_value) in self.merkle_proof.iter().enumerate() {
+                    let select = main_gate.assign_value(&mut ctx, self.merkle_path[index])?;
+                    let hash_cell = main_gate.assign_value(&mut ctx, *hash_value)?;
+                    let left_child = main_gate.select(&mut ctx, &hash_root, &hash_cell, &select)?;
+                    let right_child =
+                        main_gate.select(&mut ctx, &hash_cell, &hash_root, &select)?;
+
+                    hasher_chip.update(&[left_child, right_child]);
+                    hash_root = hasher_chip.hash(&mut ctx)?;
                 }
 
-                println!("{:?} {:?}", self.hash_root, hash_value.value());
-                let root = main_gate.assign_value(&mut ctx, self.hash_root)?;
+                let root_cell = main_gate.assign_value(&mut ctx, self.hash_root)?;
 
-                main_gate.assert_equal(&mut ctx, &hash_value, &root)?;
-                Ok(())
+                main_gate.assert_equal(&mut ctx, &hash_root, &root_cell)
             },
         )?;
         Ok(())
@@ -87,14 +91,15 @@ mod tests {
             hasher.update(&[leaf, Fr::from(value)]);
             leaf = hasher.squeeze();
             merkle_proof.push(Fr::from(value));
-            println!("{:?}", leaf);
         }
 
         let circuit = MerkleTreeCircuit {
             leaf_node: Value::known(Fr::from(123)),
+            merkle_path: (0..8).map(|_| Value::known(Fr::from(1))).collect(),
             hash_root: Value::known(leaf),
             merkle_proof: merkle_proof.iter().map(|v| Value::known(*v)).collect(),
         };
+
         assert_eq!(mock_prover_verify(&circuit, vec![vec![]]), Ok(()));
     }
 }
