@@ -1,3 +1,6 @@
+use transcript::HasherChip;
+
+mod  circuit;
+
 fn main() {
-    println!("Hello, world!");
 }
