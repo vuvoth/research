@@ -1,5 +1,3 @@
-use std::hash;
-
 use halo2curves::FieldExt;
 use poseidon::Spec;
 use transcript::{
@@ -43,7 +41,7 @@ impl<F: FieldExt> Circuit<F> for MerkleTreeCircuit<F> {
         mut layouter: impl transcript::halo2::circuit::Layouter<F>,
     ) -> Result<(), transcript::halo2::plonk::Error> {
         let config = config.config;
-
+        // TODO: Check the size of merkle_path and merkle_proof is equal
         layouter.assign_region(
             || "",
             |region| {
@@ -54,9 +52,10 @@ impl<F: FieldExt> Circuit<F> for MerkleTreeCircuit<F> {
 
                 let mut hash_root = main_gate.assign_value(&mut ctx, self.leaf_node)?;
 
-                for (index, hash_value) in self.merkle_proof.iter().enumerate() {
-                    let select = main_gate.assign_value(&mut ctx, self.merkle_path[index])?;
+                for (id, hash_value) in self.merkle_proof.iter().enumerate() {
+                    let select = main_gate.assign_value(&mut ctx, self.merkle_path[id])?;
                     let hash_cell = main_gate.assign_value(&mut ctx, *hash_value)?;
+
                     let left_child = main_gate.select(&mut ctx, &hash_root, &hash_cell, &select)?;
                     let right_child =
                         main_gate.select(&mut ctx, &hash_cell, &hash_root, &select)?;
@@ -87,7 +86,7 @@ mod tests {
         let mut merkle_proof = Vec::new();
         let mut hasher = poseidon::Poseidon::<Fr, 3, 2>::new(8, 57);
 
-        for value in 0..=7 {
+        for value in 0..20 {
             hasher.update(&[leaf, Fr::from(value)]);
             leaf = hasher.squeeze();
             merkle_proof.push(Fr::from(value));
@@ -95,10 +94,22 @@ mod tests {
 
         let circuit = MerkleTreeCircuit {
             leaf_node: Value::known(Fr::from(123)),
-            merkle_path: (0..8).map(|_| Value::known(Fr::from(1))).collect(),
+            merkle_path: (0..20).map(|_| Value::known(Fr::from(1))).collect(),
             hash_root: Value::known(leaf),
             merkle_proof: merkle_proof.iter().map(|v| Value::known(*v)).collect(),
         };
+
+        // use plotters::prelude::*;
+        // let root = BitMapBackend::new("./target/semaphore.png", (1024, 768)).into_drawing_area();
+        // root.fill(&WHITE).unwrap();
+        // let root = root.titled("Semaphore", ("sans-serif", 60)).unwrap();
+
+        // halo2_proofs::dev::CircuitLayout::default()
+        //     // .show_labels(false)
+        //     // Render the circuit onto your area!
+        //     // The first argument is the size parameter for the circuit.
+        //     .render(15, &circuit, &root)
+        //     .unwrap();
 
         assert_eq!(mock_prover_verify(&circuit, vec![vec![]]), Ok(()));
     }
