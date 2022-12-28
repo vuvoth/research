@@ -494,9 +494,10 @@ dependencies = [
 [[package]]
 name = "ecc"
 version = "0.1.0"
+source = "git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2022_10_22#63bde545d934e69c806ef9bc8b18f03f6ec0fe8e"
 dependencies = [
  "group",
- "integer 0.1.0",
+ "integer 0.1.0 (git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2022_10_22)",
  "num-bigint",
  "num-integer",
  "num-traits",
@@ -507,10 +508,10 @@ dependencies = [
 [[package]]
 name = "ecc"
 version = "0.1.0"
-source = "git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2022_10_22#63bde545d934e69c806ef9bc8b18f03f6ec0fe8e"
+source = "git+https://github.com/vuvoth/halo2wrong?branch=export-hasher-chip#52841ecf6069718c2485ae99a67d9fcf65969fc1"
 dependencies = [
  "group",
- "integer 0.1.0 (git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2022_10_22)",
+ "integer 0.1.0 (git+https://github.com/vuvoth/halo2wrong?branch=export-hasher-chip)",
  "num-bigint",
  "num-integer",
  "num-traits",
@@ -761,6 +762,7 @@ dependencies = [
 [[package]]
 name = "halo2wrong"
 version = "0.1.0"
+source = "git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2022_10_22#63bde545d934e69c806ef9bc8b18f03f6ec0fe8e"
 dependencies = [
  "group",
  "halo2_proofs 0.2.0 (git+https://github.com/privacy-scaling-explorations/halo2.git?tag=v2022_10_22)",
@@ -772,7 +774,7 @@ dependencies = [
 [[package]]
 name = "halo2wrong"
 version = "0.1.0"
-source = "git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2022_10_22#63bde545d934e69c806ef9bc8b18f03f6ec0fe8e"
+source = "git+https://github.com/vuvoth/halo2wrong?branch=export-hasher-chip#52841ecf6069718c2485ae99a67d9fcf65969fc1"
 dependencies = [
  "group",
  "halo2_proofs 0.2.0 (git+https://github.com/privacy-scaling-explorations/halo2.git?tag=v2022_10_22)",
@@ -882,9 +884,10 @@ dependencies = [
 [[package]]
 name = "integer"
 version = "0.1.0"
+source = "git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2022_10_22#63bde545d934e69c806ef9bc8b18f03f6ec0fe8e"
 dependencies = [
  "group",
- "maingate 0.1.0",
+ "maingate 0.1.0 (git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2022_10_22)",
  "num-bigint",
  "num-integer",
  "num-traits",
@@ -895,10 +898,10 @@ dependencies = [
 [[package]]
 name = "integer"
 version = "0.1.0"
-source = "git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2022_10_22#63bde545d934e69c806ef9bc8b18f03f6ec0fe8e"
+source = "git+https://github.com/vuvoth/halo2wrong?branch=export-hasher-chip#52841ecf6069718c2485ae99a67d9fcf65969fc1"
 dependencies = [
  "group",
- "maingate 0.1.0 (git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2022_10_22)",
+ "maingate 0.1.0 (git+https://github.com/vuvoth/halo2wrong?branch=export-hasher-chip)",
  "num-bigint",
  "num-integer",
  "num-traits",
@@ -985,9 +988,10 @@ dependencies = [
 [[package]]
 name = "maingate"
 version = "0.1.0"
+source = "git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2022_10_22#63bde545d934e69c806ef9bc8b18f03f6ec0fe8e"
 dependencies = [
  "group",
- "halo2wrong 0.1.0",
+ "halo2wrong 0.1.0 (git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2022_10_22)",
  "num-bigint",
  "num-integer",
  "num-traits",
@@ -998,10 +1002,10 @@ dependencies = [
 [[package]]
 name = "maingate"
 version = "0.1.0"
-source = "git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2022_10_22#63bde545d934e69c806ef9bc8b18f03f6ec0fe8e"
+source = "git+https://github.com/vuvoth/halo2wrong?branch=export-hasher-chip#52841ecf6069718c2485ae99a67d9fcf65969fc1"
 dependencies = [
  "group",
- "halo2wrong 0.1.0 (git+https://github.com/privacy-scaling-explorations/halo2wrong?tag=v2022_10_22)",
+ "halo2wrong 0.1.0 (git+https://github.com/vuvoth/halo2wrong?branch=export-hasher-chip)",
  "num-bigint",
  "num-integer",
  "num-traits",
@@ -1788,8 +1792,9 @@ dependencies = [
 [[package]]
 name = "transcript"
 version = "0.1.0"
+source = "git+https://github.com/vuvoth/halo2wrong?branch=export-hasher-chip#52841ecf6069718c2485ae99a67d9fcf65969fc1"
 dependencies = [
- "ecc 0.1.0",
+ "ecc 0.1.0 (git+https://github.com/vuvoth/halo2wrong?branch=export-hasher-chip)",
  "group",
  "poseidon",
  "subtle",

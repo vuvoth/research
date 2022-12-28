@@ -13,7 +13,7 @@ mod tests {
 
 
     #[test]
-    fn test() {
+    fn test_snark_verifier() {
         let mut leaf = Fr::from(123);
         let mut merkle_proof = Vec::new();
         let mut hasher = poseidon::Poseidon::<Fr, 3, 2>::new(8, 57);
