@@ -4,6 +4,8 @@ mod snark;
 
 #[cfg(test)]
 mod tests {
+    use std::vec;
+
     use halo2_proofs::{circuit::Value};
     use halo2curves::bn256::Fr;
 
@@ -27,17 +29,19 @@ mod tests {
         let my_circuit = MerkleTreeCircuit {
             leaf_node: Value::known(Fr::from(123)),
             merkle_path: (0..5).map(|_| Value::known(Fr::from(1))).collect(),
-            hash_root: Value::known(leaf),
+            hash_root: leaf,
             merkle_proof: merkle_proof.iter().map(|v| Value::known(*v)).collect(),
         };
 
 
         let params =MyProver::gen_srs(14);
         
+        let instances = vec![vec![my_circuit.hash_root]];
+
         let pk = MyProver::gen_pk(&params, &my_circuit);
-        let contract_opcodes = MyProver::verify_smart_contact_opcode(&params, pk.get_vk(), vec![]);
-        let proof = MyProver::gen_proof(&params, &pk, my_circuit.clone(), vec![vec![]]);
-        let verify = MyProver::evm_verify(contract_opcodes, vec![vec![]], proof);
+        let contract_opcodes = MyProver::verify_smart_contact_opcode(&params, pk.get_vk(), vec![1]);
+        let proof = MyProver::gen_proof(&params, &pk, my_circuit.clone(), instances.clone());
+        let verify = MyProver::evm_verify(contract_opcodes, instances, proof);
         println!("{}", verify);
         assert!(verify);
     }
