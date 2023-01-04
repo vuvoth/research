@@ -42,7 +42,6 @@ mod tests {
         let contract_opcodes = MyProver::verify_smart_contact_opcode(&params, pk.get_vk(), vec![1]);
         let proof = MyProver::gen_proof(&params, &pk, my_circuit.clone(), instances.clone());
         let verify = MyProver::evm_verify(contract_opcodes, instances, proof);
-        println!("{}", verify);
         assert!(verify);
     }
 }

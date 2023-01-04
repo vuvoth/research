@@ -14,10 +14,10 @@ use halo2_proofs::{
     },
     transcript::{TranscriptReadBuffer, TranscriptWriterBuffer},
 };
-use halo2curves::bn256::{Bn256, Fq, Fr, G1Affine, G1};
+use halo2curves::bn256::{Bn256, Fq, Fr, G1Affine};
 use itertools::Itertools;
 
-use rand::{rngs::OsRng, RngCore};
+use rand::{rngs::OsRng};
 use snark_verifier::{
     loader::evm::{self, encode_calldata, Address, EvmLoader, ExecutorBuilder},
     pcs::kzg::{Gwc19, KzgAs},
