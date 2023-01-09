@@ -1,4 +1,4 @@
-use halo2curves::FieldExt;
+use halo2_curves::{FieldExt, bn256::Fr};
 use poseidon::Spec;
 use transcript::{
     halo2::{
@@ -73,31 +73,40 @@ impl<F: FieldExt> Circuit<F> for MerkleTreeCircuit<F> {
     }
 }
 
+pub fn gen_merkle_circuit_data(n: u64) -> MerkleTreeCircuit<Fr>{
+    let mut leaf = Fr::from(123);
+    let mut merkle_proof = Vec::new();
+    let mut hasher = poseidon::Poseidon::<Fr, 3, 2>::new(8, 57);
+
+    for value in 0..n {
+        hasher.update(&[leaf, Fr::from(value)]);
+        leaf = hasher.squeeze();
+        merkle_proof.push(Fr::from(value));
+    }
+
+    let circuit = MerkleTreeCircuit {
+        leaf_node: Value::known(Fr::from(123)),
+        merkle_path: (0..5).map(|_| Value::known(Fr::from(1))).collect(),
+        hash_root: leaf,
+        merkle_proof: merkle_proof.iter().map(|v| Value::known(*v)).collect(),
+    };
+    circuit
+}
+
 #[cfg(test)]
-mod tests {
-    use halo2curves::bn256::Fr;
+pub mod tests {
+    use halo2_curves::{bn256::Fr, FieldExt};
     use transcript::{halo2::circuit::Value, maingate::mock_prover_verify};
 
-    use super::MerkleTreeCircuit;
+    use crate::circuit::merkle_tree::gen_merkle_circuit_data;
+
+
+   
 
     #[test]
     fn test_circuit() {
-        let mut leaf = Fr::from(123);
-        let mut merkle_proof = Vec::new();
-        let mut hasher = poseidon::Poseidon::<Fr, 3, 2>::new(8, 57);
-
-        for value in 0..5 {
-            hasher.update(&[leaf, Fr::from(value)]);
-            leaf = hasher.squeeze();
-            merkle_proof.push(Fr::from(value));
-        }
-
-        let circuit = MerkleTreeCircuit {
-            leaf_node: Value::known(Fr::from(123)),
-            merkle_path: (0..5).map(|_| Value::known(Fr::from(1))).collect(),
-            hash_root: leaf,
-            merkle_proof: merkle_proof.iter().map(|v| Value::known(*v)).collect(),
-        };
+        
+        let circuit = gen_merkle_circuit_data(5); 
 
         // use plotters::prelude::*;
         // let root = BitMapBackend::new("./target/semaphore.png", (1024, 768)).into_drawing_area();
