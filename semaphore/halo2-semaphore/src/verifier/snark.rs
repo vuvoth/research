@@ -14,7 +14,7 @@ use halo2_proofs::{
     },
     transcript::{TranscriptReadBuffer, TranscriptWriterBuffer},
 };
-use halo2curves::bn256::{Bn256, Fq, Fr, G1Affine};
+use halo2_curves::bn256::{Bn256, Fq, Fr, G1Affine};
 use itertools::Itertools;
 
 use rand::{rngs::OsRng};
